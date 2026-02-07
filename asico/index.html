@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASICO - Email Signature Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f7fa;
+            --surface: #ffffff;
+            --text: #0a0a0a;
+            --text-secondary: #525252;
+            --text-muted: #a3a3a3;
+            --border: #e5e5e5;
+            --accent: #10325b;
+            --accent-secondary: #f2b966;
+            --accent-dark: #0a2040;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 48px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--text);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .company-logo {
+            width: 160px;
+            height: auto;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface);
+        }
+
+        .arabic-input {
+            direction: rtl;
+            text-align: right;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            margin-top: 16px;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            background: var(--surface);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+            margin-top: 0;
+        }
+
+        .preview-area {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 300px;
+            overflow-x: auto;
+        }
+
+        .preview-placeholder {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 48px 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: var(--bg);
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .tab.active {
+            background: var(--surface);
+            color: var(--text);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .code-block {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        .code-block pre {
+            font-family: 'Consolas', monospace;
+            font-size: 0.65rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--accent);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Portal</a>
+        <header class="header">
+            <img src="assets/logo.png" alt="ASICO" class="company-logo">
+            <h1>Email Signature Generator</h1>
+            <p>Create your professional bilingual ASICO signature</p>
+        </header>
+
+        <div class="main-grid">
+            <div class="card">
+                <div class="card-title">Employee Details</div>
+                <form id="signatureForm">
+                    <div class="form-section">
+                        <div class="form-section-title">English</div>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="fullName" placeholder="Shoaib Ahmed" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Job Title</label>
+                            <input type="text" id="designation" placeholder="Web Developer" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">العربية</div>
+                        <div class="form-group">
+                            <label>الاسم الكامل</label>
+                            <input type="text" id="fullNameAr" class="arabic-input" placeholder="شعیب احمد" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المسمى الوظيفي</label>
+                            <input type="text" id="designationAr" class="arabic-input" placeholder="مطور ويب" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Choose Branch / اختر الفرع</label>
+                            <select id="branch" required>
+                                <option value="main">Main Branch - الفرع الرئيسي</option>
+                                <option value="deira">Deira - ديرة</option>
+                                <option value="dubaisouth">Dubai South - دبي الجنوب</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Contact</div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" placeholder="shoaib.ahmed@asico.ae" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile (Optional)</label>
+                            <input type="text" id="mobile" placeholder="+971 50 123 4567">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Generate Signature</button>
+                    <a href="template.html" class="btn btn-secondary" target="_blank">Get Manual Template</a>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Preview</div>
+                <div class="tabs">
+                    <button class="tab active" data-tab="preview">Preview</button>
+                    <button class="tab" data-tab="html">HTML Code</button>
+                </div>
+                <div id="preview" class="tab-content active">
+                    <div class="preview-area" id="signaturePreview">
+                        <div class="preview-placeholder">Fill in your details and click Generate</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" id="copyHtmlBtn" disabled>Copy HTML</button>
+                        <button class="btn btn-secondary" id="downloadBtn" disabled>Download</button>
+                    </div>
+                </div>
+                <div id="html" class="tab-content">
+                    <div class="code-block">
+                        <pre id="htmlCode">Generate a signature to see code...</pre>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="copyCodeBtn" disabled>Copy Code</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>ASICO Group © 2026</p>
+            <p style="margin-top: 8px; font-size: 0.75rem; color: var(--text-muted);">Developed by Shoaib Ahmed (Web
+                Developer - ASICO)</p>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification">✓ Copied!</div>
+
+    <script>
+        const form = document.getElementById('signatureForm');
+        const preview = document.getElementById('signaturePreview');
+        const htmlCodeEl = document.getElementById('htmlCode');
+        const copyHtmlBtn = document.getElementById('copyHtmlBtn');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const notification = document.getElementById('notification');
+        let generatedHtml = '';
+
+        const getBaseUrl = () => {
+            const loc = window.location;
+            const path = loc.pathname.substring(0, loc.pathname.lastIndexOf('/'));
+            return loc.origin + path + '/assets';
+        };
+
+        // Branch addresses
+        const branches = {
+            main: {
+                en: 'Office 308, Emaar Business Park Building 3,<br>The Greens, Dubai, United Arab Emirates',
+                ar: 'مكتب 308، إعمار بزنس بارك، مبنى 3،<br>ذا جرينز، دبي، الإمارات العربية المتحدة'
+            },
+            deira: {
+                en: 'Office 604 & 605, 6th Floor, Century 21 Building,<br>Abu Baker Al Siddique Road, Deira, Dubai, UAE',
+                ar: 'مكتب 604 و 605، الطابق السادس، مبنى سنتشري 21،<br>شارع أبو بكر الصديق، ديرة، دبي، الإمارات'
+            },
+            dubaisouth: {
+                en: 'Office No 111, Building A1, Business Park,<br>Dubai South, Dubai, United Arab Emirates',
+                ar: 'مكتب رقم 111، مبنى A1، بزنس بارك،<br>دبي الجنوب، دبي، الإمارات العربية المتحدة'
+            }
+        };
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        function generateSignature(data) {
+            const baseUrl = getBaseUrl();
+            const branchAddr = branches[data.branch];
+            const mobileRow = data.mobile ? `<span style="font-size: 12px; color: #333333; display: block; margin-top: 2px;">${data.mobile}</span>` : '';
+            const mobileRowAr = data.mobile ? `<span dir="ltr" style="font-size: 12px; color: #333333; display: block; margin-top: 2px;">${data.mobile}</span>` : '';
+
+            return `<!-- ASICO Email Signature -->
+<table cellspacing="0" cellpadding="0" border="0" width="700" style="font-family: Arial, Helvetica, sans-serif; width: 700px; max-width: 100%;" role="presentation">
+    <tr>
+        <td style="padding: 0;">
+            <table cellspacing="0" cellpadding="0" border="0" width="100%" role="presentation">
+                <tr>
+                    <td width="35%" valign="top" style="padding: 10px 0;">
+                        <span style="font-size: 18px; font-weight: bold; color: #10325b; display: block; line-height: 1.3;">${data.fullName}</span>
+                        <span style="font-size: 13px; color: #666666; display: block; margin-top: 2px;">${data.designation}</span>
+                        <span style="font-size: 12px; color: #333333; display: block; margin-top: 4px;">${data.email}</span>${mobileRow}
+                    </td>
+                    <td width="30%" valign="top" align="center" style="padding: 10px 15px;">
+                        <img src="${baseUrl}/logo.png" alt="ASICO" width="120" style="display: block; margin: 0 auto 10px;">
+                        <table cellspacing="0" cellpadding="0" border="0" align="center" role="presentation">
+                            <tr>
+                                <td style="padding: 0 4px;"><a href="https://www.instagram.com/asicorealestate/" target="_blank"><img src="${baseUrl}/insta.png" alt="Instagram" width="20" height="20" style="display: block;"></a></td>
+                                <td style="padding: 0 4px;"><a href="https://www.linkedin.com/company/asico-re/" target="_blank"><img src="${baseUrl}/linkedin.png" alt="LinkedIn" width="20" height="20" style="display: block;"></a></td>
+                                <td style="padding: 0 4px;"><a href="https://www.facebook.com/asicorealestate/" target="_blank"><img src="${baseUrl}/facebook.png" alt="Facebook" width="20" height="20" style="display: block;"></a></td>
+                                <td style="padding: 0 4px;"><a href="https://www.youtube.com/@AsicoRealEstate" target="_blank"><img src="${baseUrl}/youtube.png" alt="YouTube" width="20" height="20" style="display: block;"></a></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="35%" valign="top" align="right" dir="rtl" style="padding: 10px 0;">
+                        <span style="font-size: 18px; font-weight: bold; color: #10325b; display: block; line-height: 1.3;">${data.fullNameAr}</span>
+                        <span style="font-size: 13px; color: #666666; display: block; margin-top: 2px;">${data.designationAr}</span>
+                        <span dir="ltr" style="font-size: 12px; color: #333333; display: block; margin-top: 4px;">${data.email}</span>${mobileRowAr}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 15px 0 10px 0; border-top: 1px solid #eeeeee;">
+            <table cellspacing="0" cellpadding="0" border="0" width="100%" role="presentation">
+                <tr>
+                    <td width="50%" valign="top" style="font-size: 11px; color: #666666; line-height: 1.6; padding-right: 20px;">
+                        ${branchAddr.en}<br>UAE | Tel: +971 600 527 426<br>Website: <a href="https://asico.ae/" style="color: #10325b; text-decoration: none;">www.asico.ae</a>
+                    </td>
+                    <td width="50%" valign="top" align="right" dir="rtl" style="font-size: 11px; color: #666666; line-height: 1.6; padding-left: 20px;">
+                        ${branchAddr.ar}<br>الإمارات | هاتف: <span dir="ltr">+971 600 527 426</span><br>الموقع: <a href="https://asico.ae/" style="color: #10325b; text-decoration: none;">www.asico.ae</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>`;
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                fullName: document.getElementById('fullName').value.trim(),
+                fullNameAr: document.getElementById('fullNameAr').value.trim(),
+                designation: document.getElementById('designation').value.trim(),
+                designationAr: document.getElementById('designationAr').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                mobile: document.getElementById('mobile').value.trim(),
+                branch: document.getElementById('branch').value
+            };
+            generatedHtml = generateSignature(data);
+            preview.innerHTML = generatedHtml;
+            htmlCodeEl.textContent = generatedHtml;
+            copyHtmlBtn.disabled = false;
+            copyCodeBtn.disabled = false;
+            downloadBtn.disabled = false;
+        });
+
+        function showNotification(msg) {
+            notification.textContent = msg;
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 2500);
+        }
+
+        copyHtmlBtn.addEventListener('click', async () => {
+            try { await navigator.clipboard.writeText(generatedHtml); showNotification('✓ HTML Copied!'); }
+            catch (e) { showNotification('Failed to copy'); }
+        });
+
+        copyCodeBtn.addEventListener('click', async () => {
+            try { await navigator.clipboard.writeText(generatedHtml); showNotification('✓ Code Copied!'); }
+            catch (e) { showNotification('Failed to copy'); }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const fn = document.getElementById('fullName').value.trim();
+            const branch = document.getElementById('branch').value;
+            const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ASICO Signature - ${fn}</title></head><body style="margin:20px;font-family:Arial,sans-serif;">${generatedHtml}</body></html>`], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `asico_signature_${fn.toLowerCase().replace(/\s+/g, '_')}_${branch}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('✓ Downloaded!');
+        });
+    </script>
+</body>
+
+</html>
